@@ -1,5 +1,8 @@
 <Project>
     <PropertyGroup>
-        <!-- Put dependencies here -->
+        <RoslynVersion>2.3.1</RoslynVersion>
+        <MSBuildVersion>15.3.409</MSBuildVersion>
+        <CommandLineUtilsVersion>1.1.1</CommandLineUtilsVersion>
+        <ExtensionsVersion>2.0.0</ExtensionsVersion>
     </PropertyGroup>
 </Project>
