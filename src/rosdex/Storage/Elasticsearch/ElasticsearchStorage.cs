@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ namespace Rosdex.Storage.Elasticsearch
         {
             var config = new ConnectionSettings(uri)
                 .BasicAuthentication(userName, password);
-            BuildMappings(config);
             _client = new ElasticClient(config);
             _indexPrefix = indexPrefix;
             _logger = logger;
@@ -36,25 +36,25 @@ namespace Rosdex.Storage.Elasticsearch
             foreach (var symbol in snapshot.Symbols)
             {
                 _logger.LogTrace("Queuing index of Symbol: {SymbolPath}", symbol.Path);
-                request.Operations.Add(new BulkIndexOperation<SymbolDefinition>(symbol));
+                request.Operations.Add(new BulkIndexOperation<SymbolDefinitionSurrogate>(new SymbolDefinitionSurrogate(symbol)));
             }
 
             // Store Projects (and their documents)
             foreach (var project in snapshot.Projects)
             {
                 _logger.LogTrace("Queuing index of Project: {Name}", project.Name);
-                request.Operations.Add(new BulkIndexOperation<Project>(project));
+                request.Operations.Add(new BulkIndexOperation<ProjectSurrogate>(new ProjectSurrogate(project)));
 
                 foreach(var document in project.Documents)
                 {
                     _logger.LogTrace("Queuing index of Document: {Name}", document.Name);
-                    request.Operations.Add(new BulkIndexOperation<Document>(document));
+                    request.Operations.Add(new BulkIndexOperation<DocumentSurrogate>(new DocumentSurrogate(document)));
                 }
             }
 
             // Store the snapshot metadata itself
             _logger.LogTrace("Queuing index of Snapshot: {Name}", snapshot.Name);
-            request.Operations.Add(new BulkIndexOperation<Snapshot>(snapshot));
+            request.Operations.Add(new BulkIndexOperation<SnapshotSurrogate>(new SnapshotSurrogate(snapshot)));
 
             // Send the request
             _logger.LogInformation("Writing {DocumentCount} documents to Elasticsearch", request.Operations.Count);
@@ -72,6 +72,60 @@ namespace Rosdex.Storage.Elasticsearch
                     _logger.LogError("Document '{Id}' failed to write: {Error}", errorItem.Id, errorItem.Error);
                 }
                 return false;
+            }
+        }
+
+        private class SnapshotSurrogate
+        {
+            public string Name { get; set; }
+
+            public SnapshotSurrogate(Snapshot snapshot)
+            {
+                Name = snapshot.Name;
+            }
+        }
+
+        private class DocumentSurrogate
+        {
+            public string Name { get; set; }
+            public string FilePath { get; set; }
+            public IReadOnlyList<string> Folders { get; set; }
+
+            public DocumentSurrogate(Document document)
+            {
+                Name = document.Name;
+                FilePath = document.FilePath;
+                Folders = document.Folders;
+            }
+        }
+
+        private class ProjectSurrogate
+        {
+            public string Name { get; set; }
+            public string FilePath { get; set; }
+            public string AssemblyName { get; set; }
+            public string Language { get; set; }
+
+            public ProjectSurrogate(Project project)
+            {
+                Name= project.Name;
+                FilePath=project.FilePath;
+                AssemblyName=project.AssemblyName;
+                Language=project.Language;
+            }
+        }
+
+        private class SymbolDefinitionSurrogate
+        {
+            public string Path { get; set; }
+
+            public SymbolDefinitionSurrogate(SymbolDefinition symbol)
+            {
+                Path = symbol.Path.ToString();
+                Name = symbol.Name;
+                FullName = symbol.FullName;
+                Type = symbol.Type;
+                Location = symbol.Location;
             }
         }
     }
