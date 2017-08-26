@@ -75,6 +75,7 @@ namespace Rosdex.Storage.Elasticsearch
             }
         }
 
+        [ElasticsearchType(Name = nameof(Snapshot))]
         private class SnapshotSurrogate
         {
             public string Name { get; set; }
@@ -85,6 +86,7 @@ namespace Rosdex.Storage.Elasticsearch
             }
         }
 
+        [ElasticsearchType(Name = nameof(Document))]
         private class DocumentSurrogate
         {
             public string Name { get; set; }
@@ -99,6 +101,7 @@ namespace Rosdex.Storage.Elasticsearch
             }
         }
 
+        [ElasticsearchType(Name = nameof(Project))]
         private class ProjectSurrogate
         {
             public string Name { get; set; }
@@ -115,9 +118,14 @@ namespace Rosdex.Storage.Elasticsearch
             }
         }
 
+        [ElasticsearchType(Name = nameof(SymbolDefinition))]
         private class SymbolDefinitionSurrogate
         {
             public string Path { get; set; }
+            public string Name { get; set; }
+            public string FullName { get; set; }
+            public SymbolType Type { get; set; }
+            public SourceSpan Location { get; set; }
 
             public SymbolDefinitionSurrogate(SymbolDefinition symbol)
             {
