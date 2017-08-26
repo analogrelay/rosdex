@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -12,14 +11,19 @@ namespace Rosdex.Storage.Elasticsearch
 {
     public class ElasticsearchStorage
     {
+        public static readonly string DefaultIndexPrefix = "snapshot-";
+
         private readonly ElasticClient _client;
         private readonly string _indexPrefix;
         private readonly ILogger<ElasticsearchStorage> _logger;
 
         public ElasticsearchStorage(Uri uri, string userName, string password, string indexPrefix, ILogger<ElasticsearchStorage> logger)
         {
-            var config = new ConnectionSettings(uri)
-                .BasicAuthentication(userName, password);
+            var config = new ConnectionSettings(uri);
+            if (!string.IsNullOrEmpty(userName))
+            {
+                config.BasicAuthentication(userName, password);
+            }
             _client = new ElasticClient(config);
             _indexPrefix = indexPrefix;
             _logger = logger;
