@@ -27,7 +27,7 @@ namespace Rosdex.Indexing
                 _logger.LogWarning(node.GetLocation(), "Unable to resolve class declaration: {Name}", node.Identifier);
             }
 
-            _builder.DefineSymbol(symbol, node);
+            _builder.Snapshot.DefineSymbol(symbol, _builder, node.GetLocation());
             _logger.LogDebug(node.GetLocation(), "Defined symbol: {Name}", node.Identifier);
 
             base.VisitClassDeclaration(node);

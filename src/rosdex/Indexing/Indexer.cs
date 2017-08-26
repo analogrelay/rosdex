@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -23,11 +24,11 @@ namespace Rosdex.Indexing
             var builder = new SnapshotBuilder();
 
             _logger.LogInformation("Generating Snapshot Index...");
-            foreach(var project in workspace.CurrentSolution.Projects)
+            foreach (var project in workspace.CurrentSolution.Projects)
             {
                 var projectBuilder = new ProjectBuilder(builder);
                 await IndexProjectAsync(project, projectBuilder, cancellationToken);
-                projectBuilder.Build();
+                builder.Projects.Add(projectBuilder);
             }
             var snapshot = builder.Build();
             _logger.LogInformation("Generated Snapshot Index");
@@ -41,11 +42,16 @@ namespace Rosdex.Indexing
             {
                 _logger.LogInformation("Indexing Project...");
 
-                foreach(var document in project.Documents)
+                builder.Name = project.Name;
+                builder.FilePath = project.FilePath;
+                builder.AssemblyName = project.AssemblyName;
+                builder.Language = project.Language;
+
+                foreach (var document in project.Documents)
                 {
                     var documentBuilder = new DocumentBuilder(builder);
                     await IndexDocumentAsync(document, documentBuilder, cancellationToken);
-                    documentBuilder.Build();
+                    builder.Documents.Add(documentBuilder);
                 }
 
                 _logger.LogInformation("Indexing complete");
@@ -55,17 +61,13 @@ namespace Rosdex.Indexing
 
         private async Task IndexDocumentAsync(Document document, DocumentBuilder builder, CancellationToken cancellationToken)
         {
-            using(_logger.BeginScope("[{DocumentName}]", document.Name))
+            using (_logger.BeginScope("[{DocumentName}]", document.Name))
             {
                 _logger.LogDebug("Indexing Document...");
 
                 builder.Name = document.Name;
                 builder.FilePath = document.FilePath;
                 builder.Folders = document.Folders;
-
-                _logger.LogTrace("Loading document text");
-                builder.Text = await document.GetTextAsync(cancellationToken);
-                _logger.LogTrace("Loaded document text");
 
                 _logger.LogTrace("Getting semantic model");
                 var semanticModel = await document.GetSemanticModelAsync(cancellationToken);

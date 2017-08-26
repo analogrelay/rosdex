@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Rosdex.Model;
 
 namespace Rosdex.Indexing
 {
@@ -11,7 +10,6 @@ namespace Rosdex.Indexing
         public string Name { get; set; }
         public string FilePath { get; set; }
         public IReadOnlyList<string> Folders { get; set; }
-        public SourceText Text { get; set; }
 
         public ProjectBuilder Project { get; }
         public SnapshotBuilder Snapshot => Project.Snapshot;
@@ -21,14 +19,12 @@ namespace Rosdex.Indexing
             Project = project;
         }
 
-        public void Build()
+        public Document Build()
         {
-        }
-
-        public void DefineSymbol(ISymbol symbol, SyntaxNode node)
-        {
-            // Record the symbol in the snapshot, referring to this document and position
-            Snapshot.DefineSymbol(symbol, this, node.GetLocation());
+            return new Document(
+                Name,
+                FilePath,
+                Folders);
         }
     }
 }

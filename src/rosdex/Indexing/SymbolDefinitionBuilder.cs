@@ -9,16 +9,14 @@ namespace Rosdex.Indexing
     {
         public SymbolPath Path { get; set; }
         public ISymbol Symbol { get; set; }
-        public DocumentBuilder Document { get; set; }
         public Location Location { get; set; }
 
         public SymbolDefinitionBuilder() { }
 
-        public SymbolDefinitionBuilder(SymbolPath path, ISymbol symbol, DocumentBuilder document, Location location)
+        public SymbolDefinitionBuilder(SymbolPath path, ISymbol symbol, Location location)
         {
             Path = path;
             Symbol = symbol;
-            Document = document;
             Location = location;
         }
 

@@ -21,9 +21,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="$(CommandLineUtilsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Storage\" />
+    <PackageReference Include="NEST" Version="$(ElasticsearchVersion)" />
   </ItemGroup>
 </Project>
