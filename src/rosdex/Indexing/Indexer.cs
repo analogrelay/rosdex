@@ -19,9 +19,12 @@ namespace Rosdex.Indexing
             _loggerFactory = loggerFactory;
         }
 
-        public async Task<Model.Snapshot> BuildIndexAsync(Workspace workspace, CancellationToken cancellationToken = default)
+        public async Task<Model.Snapshot> BuildIndexAsync(string snapshotName, Workspace workspace, CancellationToken cancellationToken = default)
         {
-            var builder = new SnapshotBuilder();
+            var builder = new SnapshotBuilder()
+            {
+                Name = snapshotName
+            };
 
             _logger.LogInformation("Generating Snapshot Index...");
             foreach (var project in workspace.CurrentSolution.Projects)
@@ -31,7 +34,7 @@ namespace Rosdex.Indexing
                 builder.Projects.Add(projectBuilder);
             }
             var snapshot = builder.Build();
-            _logger.LogInformation("Generated Snapshot Index");
+            _logger.LogInformation("Generated Snapshot Index.");
 
             return snapshot;
         }
@@ -54,7 +57,7 @@ namespace Rosdex.Indexing
                     builder.Documents.Add(documentBuilder);
                 }
 
-                _logger.LogInformation("Indexing complete");
+                _logger.LogInformation("Indexing complete.");
                 return true;
             }
         }
@@ -69,20 +72,20 @@ namespace Rosdex.Indexing
                 builder.FilePath = document.FilePath;
                 builder.Folders = document.Folders;
 
-                _logger.LogTrace("Getting semantic model");
+                _logger.LogTrace("Getting semantic model.");
                 var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-                _logger.LogTrace("Got semantic model");
+                _logger.LogTrace("Got semantic model.");
 
-                _logger.LogTrace("Getting syntax root");
+                _logger.LogTrace("Getting syntax root.");
                 var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
-                _logger.LogTrace("Got syntax root");
+                _logger.LogTrace("Got syntax root.");
 
                 // Visit syntax
-                _logger.LogTrace("Walking syntax tree");
-                var walker = new CSharpIndexingSyntaxWalker(builder, semanticModel, _loggerFactory.CreateLogger<CSharpIndexingSyntaxWalker>());
+                _logger.LogTrace("Walking syntax tree.");
+                var walker = new CSharpIndexingSyntaxWalker(builder, semanticModel, _loggerFactory.CreateLogger<CSharpIndexingSyntaxWalker>(), cancellationToken);
                 walker.Visit(syntaxRoot);
 
-                _logger.LogDebug("Indexing completed");
+                _logger.LogDebug("Indexing completed.");
             }
         }
 

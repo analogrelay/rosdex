@@ -5,5 +5,6 @@
         <CommandLineUtilsVersion>1.1.1</CommandLineUtilsVersion>
         <ExtensionsVersion>2.0.0</ExtensionsVersion>
         <ElasticsearchVersion>6.0.0-alpha1</ElasticsearchVersion>
+        <JsonNetVersion>10.0.1</JsonNetVersion>
     </PropertyGroup>
 </Project>

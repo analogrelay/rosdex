@@ -18,7 +18,7 @@ namespace Rosdex.Model
 
         public SymbolPath(IEnumerable<SymbolPathSegment> segments)
         {
-            Segments = segments.ToList();
+            Segments = (segments ?? throw new ArgumentNullException(nameof(segments))).ToList();
         }
 
         public bool Equals(SymbolPath other) => Enumerable.SequenceEqual(Segments, other.Segments);

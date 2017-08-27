@@ -1,20 +1,10 @@
 namespace Rosdex.Model
 {
-    public class SymbolDefinition
+    public class SymbolDefinition : SymbolBase
     {
-        public SymbolPath Path { get; }
-        public string Name { get; }
-        public string FullName { get; }
-        public SymbolType Type { get; }
-        public SourceSpan Location { get; }
-
-        public SymbolDefinition(SymbolPath path, string name, string fullName, SymbolType type, SourceSpan location)
+        public SymbolDefinition(SymbolPath path, string name, string fullName, SymbolType type, SourceSpan location) :
+            base(path, name, fullName, type, location)
         {
-            Path = path;
-            Name = name;
-            FullName = fullName;
-            Type = type;
-            Location = location;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Rosdex.Indexing
 
         public ProjectBuilder(SnapshotBuilder snapshot)
         {
-            Snapshot = snapshot;
+            Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
         }
 
         public Project Build()

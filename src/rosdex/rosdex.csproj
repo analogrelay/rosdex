@@ -22,5 +22,8 @@
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="$(CommandLineUtilsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion)" />
     <PackageReference Include="NEST" Version="$(ElasticsearchVersion)" />
+
+    <!-- Needed to override broken reference in NEST -->
+    <PackageReference Include="Newtonsoft.Json" Version="$(JsonNetVersion)" />
   </ItemGroup>
 </Project>

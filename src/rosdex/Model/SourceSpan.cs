@@ -11,7 +11,7 @@ namespace Rosdex.Model
 
         public SourceSpan(string path, SourceLocation start, SourceLocation end)
         {
-            Path = path;
+            Path = !string.IsNullOrEmpty(path) ? path : throw new ArgumentNullException(nameof(path));
             Start = start;
             End = end;
         }

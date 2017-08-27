@@ -20,7 +20,7 @@ namespace Rosdex
             if (args.Any(a => a.Equals("--debug", StringComparison.OrdinalIgnoreCase)))
             {
                 args = args.Where(a => !a.Equals("--debug", StringComparison.OrdinalIgnoreCase)).ToArray();
-                Console.WriteLine($"Waiting for debugger to attach. Process ID: {System.Diagnostics.Process.GetCurrentProcess().Id}");
+                Console.WriteLine($"Waiting for debugger to attach. Process ID: {System.Diagnostics.Process.GetCurrentProcess().Id}.");
                 Console.WriteLine("Press ENTER to continue...");
                 Console.ReadLine();
             }
@@ -42,8 +42,8 @@ namespace Rosdex
 
             var app = new CommandLineApplication();
             app.Name = Name;
-            app.FullName = "C# Source Code Indexer";
-            app.Description = "Tool to index C# Source Code and write the results to various data stores";
+            app.FullName = "C# Source Code Indexer.";
+            app.Description = "Tool to index C# Source Code and write the results to various data stores.";
             app.HelpOption("-h|-?|--help");
             app.VersionOption("-v|--version", Version);
 
@@ -51,8 +51,8 @@ namespace Rosdex
 
             app.Command("help", cmd =>
             {
-                cmd.Description = "Get help on a specific command, or display this help message";
-                var commandArgument = cmd.Argument("<COMMAND>", "The command to get help for (optional)");
+                cmd.Description = "Get help on a specific command, or display this help message.";
+                var commandArgument = cmd.Argument("<COMMAND>", "The command to get help for (optional).");
 
                 cmd.OnExecute(() =>
                 {
@@ -84,10 +84,14 @@ namespace Rosdex
             {
                 case TaskCanceledException _:
                 case OperationCanceledException _:
-                    Console.Error.WriteLine("User cancelled operation");
+                    Console.Error.WriteLine("User cancelled operation.");
                     return 2;
                 case CommandLineException clex:
-                    Console.Error.WriteLine($"error: {clex.Message}");
+                    var oldColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Error.Write("fail");
+                    Console.ForegroundColor = oldColor;
+                    Console.Error.WriteLine(clex.Message);
                     return clex.ExitCode;
                 case AggregateException aggex:
                     int? exitCode = null;

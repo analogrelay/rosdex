@@ -11,7 +11,7 @@ namespace Rosdex.Model
         public SymbolPathSegment(SymbolKind kind, string name)
         {
             Kind = kind;
-            Name = name;
+            Name = name ?? string.Empty;
         }
 
         public bool Equals(SymbolPathSegment other) =>

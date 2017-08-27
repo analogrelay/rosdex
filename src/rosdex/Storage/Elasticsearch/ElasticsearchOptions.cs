@@ -13,22 +13,23 @@ namespace Rosdex.Storage.Elasticsearch
 
         public ElasticsearchOptions(CommandOption urlOption, CommandOption userNameOption, CommandOption passwordOption, CommandOption indexPrefixOption)
         {
-            _urlOption = urlOption;
-            _userNameOption = userNameOption;
-            _passwordOption = passwordOption;
-            _indexPrefixOption = indexPrefixOption;
+            _urlOption = urlOption ?? throw new ArgumentNullException(nameof(urlOption));
+            _userNameOption = userNameOption ?? throw new ArgumentNullException(nameof(userNameOption));
+            _passwordOption = passwordOption ?? throw new ArgumentNullException(nameof(passwordOption));
+            _indexPrefixOption = indexPrefixOption ?? throw new ArgumentNullException(nameof(indexPrefixOption));
         }
 
-        public bool TryCreateStorage(ILoggerFactory loggerFactory, out ElasticsearchStorage storage)
+        public bool TryCreateStorage(ILoggerFactory loggerFactory, out ElasticsearchIndexStorage storage)
         {
             if (_urlOption.HasValue())
             {
-                storage = new ElasticsearchStorage(
+                storage = new ElasticsearchIndexStorage(
                     new Uri(_urlOption.Value()),
                     _userNameOption.Value(),
                     _passwordOption.Value(),
-                    _indexPrefixOption.HasValue() ? _indexPrefixOption.Value() : ElasticsearchStorage.DefaultIndexPrefix,
-                    loggerFactory.CreateLogger<ElasticsearchStorage>());
+                    _indexPrefixOption.HasValue() ? _indexPrefixOption.Value() : ElasticsearchIndexStorage.DefaultIndexPrefix,
+                    loggerFactory.CreateLogger<ElasticsearchIndexStorage>());
+                return true;
             }
             storage = null;
             return false;
